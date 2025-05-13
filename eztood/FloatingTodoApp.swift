@@ -20,19 +20,7 @@ struct FloatingTodoApp: App {
         // Remove title-bar visuals (macOS 13+). Keeps underlying titled style so
         // keyboard focus & shortcuts still work.
         .windowStyle(.hiddenTitleBar)
-        .commands {
-            CommandGroup(after: .textEditing) {
-                Button("Next Task") {
-                    NotificationCenter.default.post(name: .nextTask, object: nil)
-                }
-                .keyboardShortcut(.tab)
-
-                Button("Previous Task") {
-                    NotificationCenter.default.post(name: .prevTask, object: nil)
-                }
-                .keyboardShortcut(.tab, modifiers: [.shift])
-            }
-        }
+        // No additional commands; Tab handling is via local NSEvent monitor
 
         Settings {
             SettingsView()

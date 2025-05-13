@@ -1,7 +1,4 @@
 
-#if os(macOS)
-import AppKit
-#endif
 //
 //  ContentView.swift
 //  eztood
@@ -10,6 +7,11 @@ import AppKit
 //
 
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
+
+private typealias Metrics = Theme.Metrics
 
 
     struct ContentView: View {
@@ -23,7 +25,9 @@ import SwiftUI
         VStack(spacing: 8) {
             TextField("New task", text: $newTask, onCommit: addTask)
                 .textFieldStyle(.plain)
-                .background(Color("Base", bundle: nil).opacity(0.3))
+                .padding(.vertical, Metrics.textFieldPaddingV)
+                .padding(.horizontal, Metrics.textFieldPaddingH)
+                .background(Theme.base.opacity(0.3))
                 .font(.system(size: 14, weight: .regular, design: .rounded))
                 .focused($inputFocused)
                 .padding(.all)
@@ -49,60 +53,20 @@ import SwiftUI
                 .listStyle(.plain)
                 .listRowSeparator(.hidden)
             }
-            // Listen for Tab navigation
-            .onReceive(NotificationCenter.default.publisher(for: .nextTask)) { _ in
-                moveSelection(1)
-            }
-            .onReceive(NotificationCenter.default.publisher(for: .prevTask)) { _ in
-                moveSelection(-1)
-            }
+            // (Tab navigation handled via NSEvent monitor)
             .onAppear(perform: setupKeyMonitor)
             .onDisappear(perform: removeKeyMonitor)
-        .ignoresSafeArea() // extend into titlebar / full window
+        .ignoresSafeArea()
+        .accentColor(Theme.accent)
+        // Hidden keyboard shortcuts
+        .hiddenShortcut(.delete, modifiers: .command) { deleteTask(selection) }
+        .hiddenShortcut(.return, modifiers: .command) { store.toggleDone(taskID: selection) }
+        .hiddenShortcut("n", modifiers: .command, action: beginNewTask)
+        .hiddenShortcut("j", modifiers: .command) { moveSelection(1) }
+        .hiddenShortcut("k", modifiers: .command) { moveSelection(-1) }
+        .hiddenShortcut(.downArrow) { moveSelection(1) }
+        .hiddenShortcut(.upArrow) { moveSelection(-1) }
 
-            // Hidden buttons solely for keyboard shortcuts
-            Button(action: { deleteTask(selection) }) {
-                EmptyView()
-            }
-            .keyboardShortcut(.delete, modifiers: .command)
-            .frame(width: 0, height: 0)
-            .opacity(0)
-
-            Button(action: { store.toggleDone(taskID: selection) }) {
-                EmptyView()
-            }
-            .keyboardShortcut(.return, modifiers: .command)
-            .frame(width: 0, height: 0)
-            .opacity(0)
-
-            Button(action: beginNewTask) {
-                EmptyView()
-            }
-            .keyboardShortcut("n", modifiers: .command)
-            .frame(width: 0, height: 0)
-            .opacity(0)
-
-            // Cmd-J / Cmd-K navigation (Vim-style)
-            Button(action: { moveSelection(1) }) { EmptyView() }
-                .keyboardShortcut("j", modifiers: .command)
-                .frame(width: 0, height: 0)
-                .opacity(0)
-
-            Button(action: { moveSelection(-1) }) { EmptyView() }
-                .keyboardShortcut("k", modifiers: .command)
-                .frame(width: 0, height: 0)
-                .opacity(0)
-
-            // Arrow-key navigation among tasks
-            Button(action: { moveSelection(1) }) { EmptyView() }
-                .keyboardShortcut(.downArrow, modifiers: [])
-                .frame(width: 0, height: 0)
-                .opacity(0)
-            
-            Button(action: { moveSelection(-1) }) { EmptyView() }
-                .keyboardShortcut(.upArrow, modifiers: [])
-                .frame(width: 0, height: 0)
-                .opacity(0)
         }
 
         private func addTask() {
@@ -212,9 +176,9 @@ private struct TaskRow: View {
 
     private var colorForText: Color {
         if task.isDone {
-            return Color("Accent", bundle: nil)
+            return Theme.accent
         } else {
-            return Color("Contrast", bundle: nil)
+            return Theme.contrast
         }
     }
 
@@ -231,20 +195,20 @@ private struct TaskRow: View {
                 HStack(spacing: 6) {
                     Button(action: toggleAction) {
                         Image(systemName: task.isDone ? "arrow.uturn.left.circle" : "checkmark.circle")
-                            .foregroundColor(Color("Accent", bundle: nil))
+                            .foregroundColor(Theme.accent)
                     }
                     .buttonStyle(.borderless)
 
                     Button(action: deleteAction) {
                         Image(systemName: "xmark.circle")
-                            .foregroundColor(Color("Accent", bundle: nil))
+                            .foregroundColor(Theme.accent)
                     }
                     .buttonStyle(.borderless)
                 }
                 .transition(.opacity)
             }
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, Metrics.rowVerticalPadding)
         .onHover { isOver in
             withAnimation(.easeInOut(duration: 0.1)) {
                 hovering = isOver
