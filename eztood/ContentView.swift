@@ -1,4 +1,10 @@
 import SwiftUI
+import Foundation
+
+// Notification for global show/hide shortcut
+extension Notification.Name {
+    static let toggleShowTodo = Notification.Name("FloatingTodoAppToggleShow")
+}
 
 /// The main window content displaying the tab bar, new task entry, and task list.
 struct ContentView: View {
@@ -54,6 +60,13 @@ struct ContentView: View {
         )
         .ignoresSafeArea()
         .accentColor(Theme.accent)
+        .onReceive(NotificationCenter.default.publisher(for: .toggleShowTodo)) { _ in
+            // Force-refocus the new task field when the window is summoned.
+            inputFocused = false
+            DispatchQueue.main.async {
+                inputFocused = true
+            }
+        }
         // Hidden keyboard shortcuts
         .hiddenShortcut(.delete,  modifiers: .command) { deleteTask(selection) }
         .hiddenShortcut(.return,  modifiers: .command) { tabStore.toggle(taskID: selection) }

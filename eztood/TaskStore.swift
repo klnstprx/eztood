@@ -7,7 +7,7 @@ final class TaskStore: ObservableObject {
 
     /// A single todo task, identifiable and codable for persistence.
     struct Task: Identifiable, Hashable, Equatable, Codable {
-        let id = UUID()
+        var id = UUID()
         var title: String
         var isDone: Bool = false
     }
