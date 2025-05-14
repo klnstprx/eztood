@@ -1,8 +1,3 @@
-//
-//  FloatingTodoApp.swift
-//  eztood
-//
-
 import SwiftUI
 import AppKit
 
@@ -11,10 +6,12 @@ struct FloatingTodoApp: App {
 
     // Hook into AppKit to fine-tune the NSWindow once SwiftUI created it.
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @StateObject private var tabStore = TabStore()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(tabStore)
                 .frame(minWidth: 260, minHeight: 320)
         }
         // Remove title-bar visuals (macOS 13+). Keeps underlying titled style so

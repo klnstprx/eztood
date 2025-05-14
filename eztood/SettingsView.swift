@@ -1,10 +1,3 @@
-//
-//  SettingsView.swift
-//  eztood
-//
-//  Created by Automation on 13/05/2025.
-//
-
 import SwiftUI
 import AppKit
 

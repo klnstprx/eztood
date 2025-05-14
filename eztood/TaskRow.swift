@@ -1,10 +1,3 @@
-//
-//  TaskRow.swift
-//  eztood
-//
-//  Extracted from ContentView for clarity – shows a single task with action buttons.
-//
-
 import SwiftUI
 
 private typealias Metrics = Theme.Metrics

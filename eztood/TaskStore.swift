@@ -1,17 +1,12 @@
-//
-//  TaskStore.swift
-//  eztood
-//
-//  Rewritten clean version.
-//
-
-import SwiftUI
+import Combine
 import UniformTypeIdentifiers
+import CoreTransferable
 
 /// Simple in-memory storage for tasks.
 final class TaskStore: ObservableObject {
 
-    struct Task: Identifiable, Hashable, Equatable {
+    /// A single todo task, identifiable and codable for persistence.
+    struct Task: Identifiable, Hashable, Equatable, Codable {
         let id = UUID()
         var title: String
         var isDone: Bool = false

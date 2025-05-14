@@ -8,8 +8,6 @@ enum Theme {
 
     // Metrics
     enum Metrics {
-        static let cornerRadius: CGFloat      = 8
-        static let rowCornerRadius: CGFloat   = 6
         static let rowVerticalPadding: CGFloat = 2
         static let textFieldPaddingV: CGFloat  = 6
         static let textFieldPaddingH: CGFloat  = 10
