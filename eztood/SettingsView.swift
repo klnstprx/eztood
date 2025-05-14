@@ -24,8 +24,8 @@ struct SettingsView: View {
             }
 
             Slider(value: $windowOpacity, in: 0.2...1.0, step: 0.05)
-                .onChange(of: windowOpacity) {
-                    applyOpacity(windowOpacity)
+                .onChange(of: windowOpacity, initial: false) { _, newValue in
+                    applyOpacity(newValue)
                 }
         }
         .padding()
